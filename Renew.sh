@@ -11,6 +11,21 @@ scriptVersion="1.0.2"
 # This section sets up the basic variables, functions, and validation
 #
 ##################################################################
+
+##################################################################
+# 
+# Custom addition by TTAM
+#
+##################################################################
+
+
+
+##################################################################
+# 
+# End custom addition by TTAM
+#
+##################################################################
+
 function check_not_root()
 {
 
@@ -560,7 +575,7 @@ log_message "Executing normal mode"
 
 #go normal
 	check_assertions
-
+	new_message="It's been $uptime_days since your last reboot. $dialogNormalMessage"
 	"$dialogPath" \
 	--title "$dialogTitle" \
 	--infobuttontext "$dialogRestartButtonText" \
@@ -572,7 +587,7 @@ log_message "Executing normal mode"
 	--quitkey "$secretQuitKey" \
 	$(echo $dialogAdditionalOptions) \
 	$(echo $dialogNormalOptions) \
-	--message "$dialogNormalMessage" \
+	--message "$new_message" \
 
 	#Set exit code based on user input
 	dialogExitCode=$?
@@ -586,9 +601,10 @@ log_message "Executing notification mode"
 
 #go notification
 	check_assertions
+	new_message="$uptime_days $dialogNotificationMessage"	
 	"$dialogPath" \
 	--notification \
-	--title "$dialogTitle" \
+	--title "It's been $uptime_days days since your last reboot" \
 	"$notificationIconCommand" "$notificationIcon" \
 	--message "$dialogNotificationMessage" \
 	$(echo $dialogAdditionalOptions) \
@@ -766,14 +782,14 @@ fi
 
 #If dryRun is enabled, set uptime days to a value that is sure to trip your policy
 if [ "$dryRun" = 1 ]; then
-	uptime_days=$(( uptimeThreshold+1 ))
+	#uptime_days=$(( uptimeThreshold+1 ))
 	activeDeferral=0
 	debug_message "DRY-RUN: Setting uptime_days to $uptime_days value for testing purposes."
 fi
 
 #Check if we're forcing aggro for testing
 if [ "$forceAggro" = 1 ]; then
-	uptime_days=$(( uptimeThreshold+1 ))
+	#uptime_days=$(( uptimeThreshold+1 ))
 	deadline='0'
 	currentDeferralCount=$(( maximumDeferrals+1 ))
 	activeDeferral=0
@@ -783,7 +799,7 @@ fi
 
 #Check if we're forcing normal for testing
 if [ "$forceNormal" = 1 ]; then
-	uptime_days=$(( uptimeThreshold+1 ))
+	#uptime_days=$(( uptimeThreshold+1 ))
 	activeDeferral=0
 	notificationCount=$((notificationThreshold+1))
 	currentDeferralCount=0
